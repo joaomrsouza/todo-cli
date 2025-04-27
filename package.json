@@ -1,6 +1,7 @@
 {
   "name": "todo-cli",
   "module": "src/index.ts",
+  "version": "1.0.0",
   "type": "module",
   "engines": {
     "node": ">=22.6.0"
