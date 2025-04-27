@@ -1,0 +1,25 @@
+{
+  "name": "todo-cli",
+  "module": "src/index.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "bun:build": "bun build src/index.ts --compile --outfile dist/todo-cli",
+    "bun:transpile": "bun build --target=node --outdir dist/todo-cli src/index.ts",
+    "bun:preview": "bun run dist/todo-cli/index.js",
+    "node:check": "node -e \"if (Number(process.versions.node.split('.')[0]) < 22 || (Number(process.versions.node.split('.')[0]) === 22 && Number(process.versions.node.split('.')[1]) < 6)) { console.warn('\\x1b[33mWarning: This project requires Node.js >=22.6.0. Current version:', process.versions.node, 'You can also use Bun (bun.sh) to run this project.'); process.exit(1); }\"",
+    "prenode:start": "npm run node:check",
+    "node:start": "node --experimental-strip-types ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22.15.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
