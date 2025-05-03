@@ -160,7 +160,11 @@ class Controller {
     // Print the current page and the number of TODOs in the current page
     console.log(c.cyan(`Página ${this._page}/${this._getMaxPage()}.`));
     console.log(
-      c.cyan(`Exibindo ${todos.length}/${db.getTodos().length} TODOs.`)
+      c.cyan(
+        `Exibindo ${todos.length}/${this._getFilteredTodos().length} TODOs${
+          this._search ? ` filtrados de ${db.getTodos().length}` : ""
+        }.`
+      )
     );
 
     // Print the TODOs in the current page
@@ -472,10 +476,10 @@ class Controller {
   }
 
   /**
-   * @method _getVisibleTodos
-   * @description Get the visible TODOs
+   * @method _getFilteredTodos
+   * @description Get the filtered TODOs
    */
-  private _getVisibleTodos() {
+  private _getFilteredTodos() {
     let todos = db.getTodos();
 
     // If the hide completed is true, filter out the TODOs that are done
@@ -485,14 +489,14 @@ class Controller {
 
     // If there is a search, filter the TODOs that match the search
     if (this._search) {
-      // Split the search into terms and create a regex for each term
-      const searchTerms = this._search
-        .split(" ")
-        .map((term) => RegExp(this._escapeRegex(term.trim()), "gi"));
+      // Split the search into terms
+      const searchTerms = this._search.split(" ");
 
       // Filter the TODOs that match every term of the search
       todos = todos.filter((todo) =>
-        searchTerms.every((term) => term.test(todo.title))
+        searchTerms.every((term) =>
+          new RegExp(this._escapeRegex(term.trim()), "gi").test(todo.title)
+        )
       );
     }
 
@@ -517,6 +521,16 @@ class Controller {
     if (this._order === "desc") {
       todos = todos.reverse();
     }
+
+    return todos;
+  }
+
+  /**
+   * @method _getVisibleTodos
+   * @description Get the visible TODOs
+   */
+  private _getVisibleTodos() {
+    const todos = this._getFilteredTodos();
 
     // Return the TODOs in the current page
     return todos.slice(
@@ -557,7 +571,7 @@ class Controller {
    * @description Get the maximum page
    */
   private _getMaxPage() {
-    return Math.ceil(db.getTodos().length / this._pageSize);
+    return Math.ceil(this._getFilteredTodos().length / this._pageSize);
   }
 
   /**

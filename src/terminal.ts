@@ -9,7 +9,7 @@ import { c } from "./colors.ts";
  * @class Terminal
  * @description Main class to handle terminal input and output
  */
-class Terminal {
+export class Terminal {
   constructor() {
     process.stdin.setEncoding("utf8");
   }
